@@ -1,6 +1,6 @@
 # js-utils
 
-A collection of lightweight, zero-dependency JavaScript utilities for modern web development.
+A collection of lightweight, zero-dependency JavaScript utilities for web development. These are some functions that I always end up using in my projects, so I decided to bundle them together for easy reuse.
 
 ## Available Utilities
 
