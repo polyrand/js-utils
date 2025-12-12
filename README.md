@@ -172,7 +172,3 @@ See [index.html](index.html) for a working demo.
 ## API Reference
 
 All functions are fully documented with JSDoc comments in [utils.js](utils.js). See the source code for detailed parameter types and usage information.
-
-## License
-
-MIT
