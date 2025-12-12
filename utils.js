@@ -280,6 +280,12 @@ export function htl(strings, ...values) {
 }
 
 /**
+ *
+ * The dAlert, dConfirm, and dPrompt functions were partially inspired by:
+ * https://github.com/simonw/prompts-js
+ */
+
+/**
  * Creates and injects a style element with dialog CSS into the document head.
  * @returns {HTMLStyleElement} The created style element
  */
