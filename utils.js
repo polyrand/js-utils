@@ -279,8 +279,136 @@ export function htl(strings, ...values) {
   return el;
 }
 
+/**
+ * Creates and injects a style element with dialog CSS into the document head.
+ * @returns {HTMLStyleElement} The created style element
+ */
+function injectDialogStyles() {
+  const styleId = "dialog-styles-injected";
+
+  // Check if styles already exist
+  let existingStyle = document.getElementById(styleId);
+  if (existingStyle) {
+    return existingStyle;
+  }
+
+  const style = document.createElement("style");
+  style.id = styleId;
+  style.textContent = `
+    .myDialogPrompt {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1000;
+      border: 1px solid rgb(229, 231, 235);
+      border-radius: 0.5rem;
+      padding: 1.25rem;
+      min-width: 300px;
+      max-width: 80%;
+      box-sizing: border-box;
+      font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      background-color: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .myDialogPrompt::backdrop {
+      background-color: rgba(17, 24, 39, 0.7);
+    }
+
+    .myDialogPrompt form {
+      margin: 0;
+    }
+
+    .myDialogPrompt .dialog-message {
+      margin-bottom: 1.25rem;
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+      color: rgb(17, 24, 39);
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .myDialogPrompt .dialog-actions {
+      text-align: right;
+      margin-top: 1.25rem;
+    }
+
+    .myDialogPrompt button {
+      cursor: pointer;
+      border-radius: 0.375rem;
+      padding-left: 0.75rem;
+      padding-right: 0.75rem;
+      padding-top: 0.5rem;
+      padding-bottom: 0.5rem;
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+      font-weight: 600;
+      border: none;
+    }
+
+    .myDialogPrompt button.primary {
+      background-color: rgb(79, 70, 229);
+      color: white;
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    }
+
+    .myDialogPrompt button.primary:hover {
+      background-color: rgb(99, 102, 241);
+    }
+
+    .myDialogPrompt button.secondary {
+      background-color: rgb(107, 114, 128);
+      color: white;
+      margin-right: 0.5rem;
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    }
+
+    .myDialogPrompt button.secondary:hover {
+      background-color: rgb(156, 163, 175);
+    }
+
+    .myDialogPrompt input {
+      width: 100%;
+      box-sizing: border-box;
+      padding-top: 0.375rem;
+      padding-bottom: 0.375rem;
+      padding-left: 0.75rem;
+      padding-right: 0.75rem;
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+      margin-bottom: 1.25rem;
+      border-radius: 0.375rem;
+      border: 0;
+      color: rgb(17, 24, 39);
+      box-shadow: 0 0 0 1px rgb(209, 213, 219) inset;
+    }
+
+    .myDialogPrompt input:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px rgb(79, 70, 229) inset;
+    }
+  `;
+
+  document.head.appendChild(style);
+  return style;
+}
+
+/**
+ * Removes the injected dialog styles from the document head.
+ */
+function removeDialogStyles() {
+  const styleId = "dialog-styles-injected";
+  const style = document.getElementById(styleId);
+  if (style) {
+    style.remove();
+  }
+}
+
 export async function dAlert({ message }) {
   const className = "myDialogPrompt";
+  const style = injectDialogStyles();
 
   const form = htl`
     <form method="dialog">
@@ -301,6 +429,7 @@ export async function dAlert({ message }) {
     dialog.addEventListener("close", () => {
       resolve();
       dialog.remove();
+      removeDialogStyles();
     });
 
     document.body.appendChild(dialog);
@@ -310,6 +439,7 @@ export async function dAlert({ message }) {
 
 export async function dConfirm({ message }) {
   const className = "myDialogPrompt";
+  const style = injectDialogStyles();
 
   return new Promise((resolve) => {
     const form = htl`
@@ -337,6 +467,7 @@ export async function dConfirm({ message }) {
     dialog.addEventListener("close", () => {
       resolve(dialog.returnValue === "ok");
       dialog.remove();
+      removeDialogStyles();
     });
 
     document.body.appendChild(dialog);
@@ -354,6 +485,7 @@ export async function dConfirm({ message }) {
  */
 export async function dPrompt({ message, type = "text" }) {
   const className = "myDialogPrompt";
+  const style = injectDialogStyles();
 
   return new Promise((resolve) => {
     const autoComplete = type === "password" ? "new-password" : "off";
@@ -385,6 +517,7 @@ export async function dPrompt({ message, type = "text" }) {
       const result = dialog.returnValue === "ok" ? input.value : null;
       resolve(result);
       dialog.remove();
+      removeDialogStyles();
     });
 
     document.body.appendChild(dialog);
