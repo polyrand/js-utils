@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS Utils Demo</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            background-color: #f0f0f0;
+        }
+
+        button:hover {
+            background-color: #e0e0e0;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>JS Utils Demo</h1>
+
+    <button id="alertBtn">Test dAlert</button>
+    <button id="spinnerBtn">Test withSpinner</button>
+
+    <script type="module">
+        import { dAlert, withSpinner } from "https://cdn.jsdelivr.net/gh/polyrand/js-utils@main/utils.js";
+
+        document.getElementById("alertBtn").addEventListener("click", async () => {
+            await dAlert({ message: "This is a custom alert dialog!" });
+            console.log("Alert closed");
+        });
+
+        document.getElementById("spinnerBtn").addEventListener("click", async () => {
+            await withSpinner(async () => {
+                // Simulate some async work
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                await dAlert({ message: "Spinner finished! Operation completed." });
+            });
+        });
+    </script>
+</body>
+
+</html>
