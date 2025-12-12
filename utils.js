@@ -286,9 +286,7 @@ export async function dAlert({ message }) {
     <form method="dialog">
       <div class="dialog-message">${message}</div>
       <div class="dialog-actions">
-        <button type="submit" value="ok" class="primary">${getI18n(
-          "OK_BUTTON"
-        )}</button>
+        <button type="submit" value="ok" class="primary">OK</button>
       </div>
     </form>
     `;
@@ -318,12 +316,8 @@ export async function dConfirm({ message }) {
       <form method="dialog">
         <div class="dialog-message">${message}</div>
         <div class="dialog-actions">
-          <button id="dialogCancelBtn" type="button" value="cancel" class="secondary">${getI18n(
-            "CANCEL_BUTTON"
-          )}</button>
-          <button id="ok" type="submit" value="ok" class="primary">${getI18n(
-            "OK_BUTTON"
-          )}</button>
+          <button id="dialogCancelBtn" type="button" value="cancel" class="secondary">Cancel</button>
+          <button id="ok" type="submit" value="ok" class="primary">OK</button>
         </div>
       </form>
     `;
@@ -369,12 +363,8 @@ export async function dPrompt({ message, type = "text" }) {
         <div class="dialog-message">${message}</div>
         <input type="${type}" name="promptInput" autocomplete="${autoComplete}">
         <div class="dialog-actions">
-          <button id="dialogCancelBtn" type="button" value="cancel" class="secondary">${getI18n(
-            "CANCEL_BUTTON"
-          )}</button>
-          <button id="ok" type="submit" value="ok" class="primary">${getI18n(
-            "OK_BUTTON"
-          )}</button>
+          <button id="dialogCancelBtn" type="button" value="cancel" class="secondary">Cancel</button>
+          <button id="ok" type="submit" value="ok" class="primary">OK</button>
         </div>
       </form>
     `;
