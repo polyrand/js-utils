@@ -173,13 +173,21 @@ export const storage = {
 };
 
 /**
- * Sets both the value property and attribute of a DOM element.  This ensures
+ * Sets both the value property and attribute of a DOM element. This ensures
  * the value is updated in both the DOM and JavaScript (each element has its own
  * rules).
  *
  * @param {HTMLElement} element - The DOM element to update
  * @param {string} name - The name of the property/attribute to set
  * @param {string} value - The new value to set
+ *
+ * @example
+ * const input = document.querySelector('input');
+ * setVal(input, 'value', 'Hello');
+ *
+ * @example
+ * const button = document.querySelector('button');
+ * setVal(button, 'disabled', 'true');
  */
 function setVal(element, name, value) {
   element[name] = value;
@@ -203,16 +211,67 @@ export function afterLoad(callback) {
   }
 }
 
+/**
+ * A string wrapper that marks content as safe (pre-escaped) HTML.
+ * Used with the `htl` template literal to prevent double-escaping.
+ */
 class Safe extends String {
   constructor(value) {
     super(value);
   }
 }
 
+/**
+ * Marks a string as safe HTML that should not be escaped by the `htl` template literal.
+ * Use this when you have pre-sanitized HTML that you want to insert as-is.
+ *
+ * @param {string} value - The HTML string to mark as safe.
+ * @returns {Safe} A Safe string instance that `htl` will not escape.
+ *
+ * @example
+ * const userContent = '<script>alert("xss")</script>';
+ * const safeContent = '<strong>Bold</strong>';
+ *
+ * // Without safe(): HTML is escaped
+ * htl`<div>${userContent}</div>`; // <div>&#60;script&#62;...
+ *
+ * // With safe(): HTML is inserted as-is (use only with trusted content)
+ * htl`<div>${safe(safeContent)}</div>`; // <div><strong>Bold</strong></div>
+ */
 export function safe(value) {
   return new Safe(value);
 }
 
+/**
+ * A tagged template literal for creating DOM elements from HTML strings with
+ * automatic XSS protection. Values are HTML-escaped by default unless wrapped
+ * with `safe()`.
+ *
+ * @param {TemplateStringsArray} strings - The template literal strings.
+ * @param {...*} values - The interpolated values to escape and insert.
+ * @returns {HTMLElement|DocumentFragment|null} The created DOM element(s).
+ *
+ * @example
+ * // Basic usage - values are automatically escaped
+ * const username = '<script>alert("xss")</script>';
+ * const el = htl`<div class="user">${username}</div>`;
+ * // Result: <div class="user">&#60;script&#62;...</div>
+ *
+ * @example
+ * // Arrays are joined automatically
+ * const items = ['Apple', 'Banana', 'Cherry'];
+ * const list = htl`<ul>${items.map(i => htl`<li>${i}</li>`)}</ul>`;
+ *
+ * @example
+ * // Nested elements work seamlessly
+ * const inner = htl`<span>Hello</span>`;
+ * const outer = htl`<div>${inner}</div>`;
+ *
+ * @example
+ * // Use safe() for pre-sanitized HTML
+ * const trustedHtml = '<strong>Bold</strong>';
+ * const el = htl`<div>${safe(trustedHtml)}</div>`;
+ */
 export function htl(strings, ...values) {
   function renderHtml(string) {
     const template = document.createElement("template");
@@ -287,7 +346,9 @@ export function htl(strings, ...values) {
 
 /**
  * Creates and injects a style element with dialog CSS into the document head.
- * @returns {HTMLStyleElement} The created style element
+ * If styles are already injected, returns the existing style element.
+ *
+ * @returns {HTMLStyleElement} The created or existing style element.
  */
 function injectDialogStyles() {
   const styleId = "dialog-styles-injected";
@@ -403,6 +464,7 @@ function injectDialogStyles() {
 
 /**
  * Removes the injected dialog styles from the document head.
+ * Safe to call even if styles were not previously injected.
  */
 function removeDialogStyles() {
   const styleId = "dialog-styles-injected";
@@ -412,6 +474,22 @@ function removeDialogStyles() {
   }
 }
 
+/**
+ * Displays an alert dialog with a custom message.
+ * A promise-based replacement for the native `alert()` function with styled UI.
+ *
+ * @param {Object} options - The options for the alert dialog.
+ * @param {string} options.message - The message to display.
+ * @returns {Promise<void>} A promise that resolves when the dialog is closed.
+ *
+ * @example
+ * await dAlert({ message: 'Operation completed successfully!' });
+ * console.log('User dismissed the alert');
+ *
+ * @example
+ * // With multiline message
+ * await dAlert({ message: 'Warning!\nThis action cannot be undone.' });
+ */
 export async function dAlert({ message }) {
   const className = "myDialogPrompt";
   const style = injectDialogStyles();
@@ -443,6 +521,27 @@ export async function dAlert({ message }) {
   });
 }
 
+/**
+ * Displays a confirmation dialog with OK and Cancel buttons.
+ * A promise-based replacement for the native `confirm()` function with styled UI.
+ *
+ * @param {Object} options - The options for the confirm dialog.
+ * @param {string} options.message - The message to display.
+ * @returns {Promise<boolean>} A promise that resolves to `true` if OK is clicked, `false` if Cancel is clicked.
+ *
+ * @example
+ * const confirmed = await dConfirm({ message: 'Are you sure you want to delete this item?' });
+ * if (confirmed) {
+ *   deleteItem();
+ * }
+ *
+ * @example
+ * // Using with early return pattern
+ * if (!await dConfirm({ message: 'Proceed with upload?' })) {
+ *   return;
+ * }
+ * uploadFile();
+ */
 export async function dConfirm({ message }) {
   const className = "myDialogPrompt";
   const style = injectDialogStyles();
@@ -541,6 +640,13 @@ export async function dPrompt({ message, type = "text" }) {
  * @param {string} selector - The selector to match the child elements.
  * @param {string} event - The event type to listen for.
  * @param {function(Event, HTMLElement): void} handler - The event handler function.
+ *
+ * @example
+ * // Handle clicks on any button inside a container
+ * const container = document.getElementById('container');
+ * delegate(container, 'button', 'click', (e, el) => {
+ *   console.log('Button clicked:', e.target.textContent);
+ * });
  */
 function delegate(el, selector, event, handler) {
   el.addEventListener(event, (e) => {
@@ -554,8 +660,17 @@ function delegate(el, selector, event, handler) {
  * Pauses the execution for a specified amount of time.
  *
  * @param {number} ms - The number of milliseconds to sleep.
- * @param {*} e - The value to resolve the promise with after the delay.
+ * @param {*} [e] - The value to resolve the promise with after the delay.
  * @returns {Promise<*>} A promise that resolves with the provided value after the specified delay.
+ *
+ * @example
+ * // Wait for 1 second
+ * await sleep(1000);
+ *
+ * @example
+ * // Wait and return a value
+ * const result = await sleep(500, 'done');
+ * console.log(result); // 'done'
  */
 async function sleep(ms, e) {
   return await new Promise((resolve) =>
@@ -569,8 +684,23 @@ async function sleep(ms, e) {
  * Executes a function while showing a spinner overlay to block the UI.
  * The spinner is always destroyed at the end, regardless of success or failure.
  *
- * @param {Function} fn - The async function to execute
- * @returns {Promise<*>} The result of the function or throws the error
+ * @param {Function} fn - The async function to execute.
+ * @returns {Promise<*>} The result of the function, or throws the error if it fails.
+ *
+ * @example
+ * // Basic usage
+ * const result = await withSpinner(async () => {
+ *   const response = await fetch('/api/data');
+ *   return response.json();
+ * });
+ *
+ * @example
+ * // With error handling
+ * try {
+ *   await withSpinner(() => submitForm(formData));
+ * } catch (error) {
+ *   console.error('Submission failed:', error);
+ * }
  */
 export async function withSpinner(fn) {
   const SPINNER_HTML =
