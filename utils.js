@@ -1,5 +1,5 @@
 /**
- * Debounce an action for up to ms milliseconds.
+ * Debounce an action for up to 'ms' milliseconds.
  *
  * @type{function(number): function(function(any): void)}
  */
