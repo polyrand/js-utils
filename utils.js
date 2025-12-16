@@ -368,15 +368,14 @@ function injectDialogStyles() {
       left: 50%;
       transform: translate(-50%, -50%);
       z-index: 1000;
-      border: 1px solid rgb(229, 231, 235);
+      border: 1px solid #e5e7eb;
       border-radius: 0.5rem;
       padding: 1.25rem;
       min-width: 300px;
       max-width: 80%;
       box-sizing: border-box;
-      font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-      background-color: white;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background-color: #ffffff;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     }
 
@@ -391,10 +390,10 @@ function injectDialogStyles() {
     .myDialogPrompt .dialog-message {
       margin-bottom: 1.25rem;
       font-size: 0.875rem;
-      line-height: 1.25rem;
-      color: rgb(17, 24, 39);
+      color: #111827;
       white-space: pre-wrap;
       word-wrap: break-word;
+      overflow-wrap: break-word;
     }
 
     .myDialogPrompt .dialog-actions {
@@ -405,56 +404,48 @@ function injectDialogStyles() {
     .myDialogPrompt button {
       cursor: pointer;
       border-radius: 0.375rem;
-      padding-left: 0.75rem;
-      padding-right: 0.75rem;
-      padding-top: 0.5rem;
-      padding-bottom: 0.5rem;
+      padding: 0.5rem 0.75rem;
       font-size: 0.875rem;
-      line-height: 1.25rem;
       font-weight: 600;
       border: none;
     }
 
     .myDialogPrompt button.primary {
-      background-color: rgb(79, 70, 229);
-      color: white;
+      background-color: #4f46e5;
+      color: #ffffff;
       box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     }
 
     .myDialogPrompt button.primary:hover {
-      background-color: rgb(99, 102, 241);
+      background-color: #6366f1;
     }
 
     .myDialogPrompt button.secondary {
-      background-color: rgb(107, 114, 128);
-      color: white;
+      background-color: #6b7280;
+      color: #ffffff;
       margin-right: 0.5rem;
       box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     }
 
     .myDialogPrompt button.secondary:hover {
-      background-color: rgb(156, 163, 175);
+      background-color: #9ca3af;
     }
 
     .myDialogPrompt input {
       width: 100%;
       box-sizing: border-box;
-      padding-top: 0.375rem;
-      padding-bottom: 0.375rem;
-      padding-left: 0.75rem;
-      padding-right: 0.75rem;
+      padding: 0.375rem 0.75rem;
       font-size: 0.875rem;
-      line-height: 1.25rem;
       margin-bottom: 1.25rem;
       border-radius: 0.375rem;
       border: 0;
-      color: rgb(17, 24, 39);
-      box-shadow: 0 0 0 1px rgb(209, 213, 219) inset;
+      color: #111827;
+      box-shadow: 0 0 0 1px #d1d5db inset;
     }
 
     .myDialogPrompt input:focus {
       outline: none;
-      box-shadow: 0 0 0 2px rgb(79, 70, 229) inset;
+      box-shadow: 0 0 0 2px #4f46e5 inset;
     }
   `;
 
