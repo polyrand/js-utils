@@ -363,12 +363,7 @@ function injectDialogStyles() {
   style.id = styleId;
   style.textContent = `
     .myDialogPrompt {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 1000;
-      border: 1px solid #e5e7eb;
+      border: none;
       border-radius: 0.5rem;
       padding: 1.25rem;
       min-width: 300px;
