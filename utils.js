@@ -372,6 +372,7 @@ function injectDialogStyles() {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
       background-color: #ffffff;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      margin: auto;
     }
 
     .myDialogPrompt::backdrop {
